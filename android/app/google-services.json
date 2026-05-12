@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "493926032532",
+    "project_id": "car-rental-gsimwanza",
+    "storage_bucket": "car-rental-gsimwanza.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493926032532:android:f9a3afec0afcc49166c081",
+        "android_client_info": {
+          "package_name": "com.project.car_rental"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACGNsYB7dYXl77mno7A78MnaFithf869c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

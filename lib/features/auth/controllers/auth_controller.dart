@@ -32,7 +32,7 @@ class AuthController extends ChangeNotifier {
 
       await _sessionManager.saveSession(
         token: _user!.token ?? '',
-        refreshToken: _user!.refreshToken ?? '',
+        //refreshToken: _user!.refreshToken ?? '',
         userId: _user!.id,
         role: _user!.role ?? '',
       );

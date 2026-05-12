@@ -1,36 +1,55 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserModel {
-  final String username;
+  final String uid;
+  final String name;
   final String email;
-  final String token;
-  final String password;
-  final String role;
-  final String address;
-  final String phoneNumber;
-  final String? refreshToken;
-  final String id;
+  final String role; // 'admin' or 'customer'
+  final DateTime createdAt;
+
   UserModel({
-    required this.id,
-    required this.username,
+    required this.uid,
+    required this.name,
     required this.email,
-    required this.token,
-    required this.password,
-    required this.role,
-    required this.address,
-    required this.phoneNumber,
-    required this.refreshToken,
+    this.role = 'customer',
+    required this.createdAt,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
+  /// Convert a Firestore document snapshot into a UserModel
+  factory UserModel.fromDoc(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return UserModel(
-      id: json['id'] ?? '',
-      username: json['username'] = '',
-      email: json['email'] = '',
-      token: json['token'] = '',
-      password: json['password'] = '',
-      role: json['role'] = '',
-      address: json['address'] = '',
-      phoneNumber: json['phoneNumber'] = '',
-      refreshToken: json['refreshToken'] = '',
+      uid: doc.id,
+      name: data['name'] ?? '',
+      email: data['email'] ?? '',
+      role: data['role'] ?? 'customer',
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
+    );
+  }
+
+  /// Convert a UserModel into a Map for Firestore
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'role': role,
+      'createdAt': Timestamp.fromDate(createdAt),
+    };
+  }
+
+  UserModel copyWith({
+    String? uid,
+    String? name,
+    String? email,
+    String? role,
+    DateTime? createdAt,
+  }) {
+    return UserModel(
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      role: role ?? this.role,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }
