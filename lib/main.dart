@@ -1,58 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'core/storage/token_storage.dart';
-import 'core/storage/session_manager.dart';
-import 'core/router/app_router.dart';
-import 'features/auth/services/auth_service.dart';
-import 'features/auth/controllers/auth_controller.dart';
+import 'firebase_options.dart';
+import 'package:car_rental/features/auth/provider/auth_provider.dart';
+//import 'providers/car_provider.dart';
+import 'package:car_rental/core/router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final tokenStorage = TokenStorage();
-  final sessionManager = SessionManager(tokenStorage: tokenStorage);
-  final authService =
-      AuthService(); // no constructor params — uses http directly
-  final authController = AuthController(
-    authService: authService,
-    sessionManager: sessionManager,
-  );
+  // Initialize Firebase using the auto-generated firebase_options.dart
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Restore session before first frame (checks secure storage for a saved token)
-  await sessionManager.checkSession();
-
-  runApp(
-    MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: authController)],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const CarRentalApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class CarRentalApp extends StatelessWidget {
+  const CarRentalApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Car Rental',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        filledButtonTheme: FilledButtonThemeData(
-          style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(52),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        //ChangeNotifierProvider(create: (_) => CarProvider()),
+      ],
+      child: Builder(
+        builder: (context) {
+          return MaterialApp.router(
+            title: 'Car Rental',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color(0xFF1A73E8),
+                brightness: Brightness.light,
+              ),
+              useMaterial3: true,
+              inputDecorationTheme: InputDecorationTheme(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+              ),
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(52),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
+            routerConfig: AppRouter.router(context),
+          );
+        },
       ),
-      routerConfig: AppRouter.router(context),
     );
   }
 }
