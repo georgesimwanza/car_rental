@@ -6,6 +6,16 @@ import 'package:car_rental/features/auth/services/auth_service.dart';
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
+  AuthProvider() {
+    _authService.authStateChanges.listen((firebaseUser) async {
+      if (firebaseUser != null) {
+        _user = await _authService.getCurrentUserProfile();
+      } else {
+        _user = null;
+      }
+      notifyListeners();
+    });
+  }
   UserModel? _user;
   bool _isLoading = false;
   String? _error;

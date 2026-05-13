@@ -32,10 +32,9 @@ class _RegisterScreenState extends State<RegisterView> {
 
     final auth = context.read<AuthProvider>();
     final success = await auth.register(
-      username: _nameController.text.trim(),
+      name: _nameController.text.trim(),
       email: _emailController.text.trim(),
       password: _passwordController.text,
-      role: 'customer',
     );
 
     if (!mounted) return;
